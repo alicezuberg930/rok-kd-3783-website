@@ -33,7 +33,7 @@ export default function HomeLayout({ children }: Props) {
 
   return (
     <>
-      <Header onOpenNav={handleOpen} />
+      {/* <Header onOpenNav={handleOpen} /> */}
 
       <Box
         sx={{
@@ -46,7 +46,7 @@ export default function HomeLayout({ children }: Props) {
         <Main>{children}</Main>
       </Box>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

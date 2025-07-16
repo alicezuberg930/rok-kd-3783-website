@@ -99,4 +99,9 @@ export const PATH_DASHBOARD = {
     view: (title: string) => path(ROOTS_HOME, `/blog/post/${title}`),
     demoView: path(ROOTS_HOME, '/blog/post/apply-these-7-secret-techniques-to-improve-event'),
   },
+  governor: {
+    view: (id: number) => path(ROOTS_HOME, `governor/${id}`),
+
+
+  }
 }
