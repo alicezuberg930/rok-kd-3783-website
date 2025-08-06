@@ -1,0 +1,238 @@
+'use client'
+import * as Yup from 'yup'
+import { useCallback, useEffect, useMemo } from 'react'
+// form
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+// @mui
+import { LoadingButton } from '@mui/lab'
+import { Card, Grid, Stack, Typography, MenuItem, Box } from '@mui/material'
+// routes
+import { PATH_DASHBOARD } from '@/routes/paths'
+// @types
+import { IMGEApplication } from '@/@types/mge'
+// components
+import { CustomFile } from '@/components/upload'
+import FormProvider, {
+    RHFSelect,
+    RHFUpload,
+    RHFTextField,
+    RHFMultiCheckbox,
+} from '@/components/hook-form'
+import { useRouter } from 'next/navigation'
+
+// ----------------------------------------------------------------------
+
+interface FormValuesProps extends IMGEApplication {
+    profileImageFile: CustomFile | string | null
+    equipmentImageFile: CustomFile | string | null
+    resourcesImageFile: CustomFile | string | null
+    speedupsImageFile: CustomFile | string | null
+}
+
+type Props = {
+    isEdit?: boolean
+    currentMge?: IMGEApplication
+}
+
+export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
+    const navigate = useRouter()
+
+    const unitTypes = [
+        { value: 'infantry', label: 'Infantry' },
+        { value: 'cavalry', label: 'Cavalry' },
+        { value: 'archer', label: 'Archer' },
+    ]
+
+    const combatTypes = [
+        { value: 'rally', label: 'Rally' },
+        { value: 'garrison', label: 'Garrison' },
+        { value: 'openfield', label: 'Open Field' },
+    ]
+
+    const commanders = [
+        { value: 'Charles Martel', label: 'Charles Martel' },
+        { value: 'El Cid', label: 'El Cid' },
+        { value: 'Ragnar Lodbrok', label: 'Ragnar Lodbrok' },
+    ]
+
+    const NewApplicationSchema = Yup.object().shape({
+        governorId: Yup.number().required('Governor ID is required'),
+        governorName: Yup.number().required('Governor name is required'),
+        profileImageFile: Yup.mixed().required('Profile image is required'),
+        unitTypeSpecialty: Yup.array().min(1).required('Unit type specialty is required'),
+        combatTypeSpecialty: Yup.array().min(1).required('Combat type specialty is required'),
+        commanderName: Yup.string().required('Commander name is required'),
+        vipLevel: Yup.number().required('VIP level is required').min(0, 'VIP level must be at least 0'),
+        equipmentImageFile: Yup.mixed().required('Equipment image is required'),
+        resourcesImageFile: Yup.mixed().required('Resources image is required'),
+        speedupsImageFile: Yup.mixed().required('Speedups image is required'),
+    })
+
+    const defaultValues = useMemo(() => ({
+        governorId: 0,
+        governorName: '',
+        commanderName: commanders[0].value,
+        vipLevel: 0,
+        unitTypeSpecialty: [],
+        combatTypeSpecialty: [],
+    }), [currentMge])
+
+    const methods = useForm<FormValuesProps>({
+        resolver: yupResolver(NewApplicationSchema),
+        defaultValues,
+    })
+
+    const {
+        reset,
+        watch,
+        setValue,
+        handleSubmit,
+        formState: { isSubmitting },
+    } = methods
+
+    const values = watch()
+
+    // useEffect(() => {
+    //     if (isEdit && currentMge) {
+    //         reset(defaultValues)
+    //     }
+    //     if (!isEdit) {
+    //         reset(defaultValues)
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [isEdit, currentMge])
+
+    const onSubmit = async (data: FormValuesProps) => {
+        console.log(data)
+    }
+
+    console.log('values', values)
+
+    const handleDrop = useCallback(
+        (acceptedFiles: File[], name: string) => {
+            const newFile = Object.assign(acceptedFiles[0], {
+                preview: URL.createObjectURL(acceptedFiles[0]),
+            })
+            if (name === 'profileImageFile') setValue('profileImageFile', newFile, { shouldValidate: true })
+            if (name === 'equipmentImageFile') setValue('equipmentImageFile', newFile, { shouldValidate: true })
+            if (name === 'resourcesImageFile') setValue('resourcesImageFile', newFile, { shouldValidate: true })
+            if (name === 'speedupsImageFile') setValue('speedupsImageFile', newFile, { shouldValidate: true })
+        },
+        [setValue, values.profileImageFile, values.equipmentImageFile, values.resourcesImageFile, values.speedupsImageFile]
+    )
+
+    const handleRemoveFile = (name: string) => {
+        if (name === 'profileImageFile') setValue('profileImageFile', null)
+        if (name === 'equipmentImageFile') setValue('equipmentImageFile', null)
+        if (name === 'resourcesImageFile') setValue('resourcesImageFile', null)
+        if (name === 'speedupsImageFile') setValue('speedupsImageFile', null)
+    }
+
+    return (
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Card sx={{ p: 3 }}>
+                        <Box
+                            gap={3}
+                            display='grid'
+                            gridTemplateColumns={{
+                                xs: 'repeat(1, 1fr)',
+                                sm: 'repeat(2, 1fr)',
+                            }}
+                        >
+                            <RHFTextField name='governorId' label='Type your governor ID' type='number' />
+                            <RHFTextField name='governorName' label='Type your name' />
+                            <RHFTextField name='vipLevel' label='Type your VIP level' type='number' />
+                            <RHFSelect name='commanderName' label='Choose the commander you want'>
+                                {/* <MenuItem value=''>SSS</MenuItem> */}
+                                {commanders.map(commander => (
+                                    <MenuItem key={commander.value} value={commander.value}>
+                                        {commander.label}
+                                    </MenuItem>
+                                ))}
+                            </RHFSelect>
+
+                            <RHFMultiCheckbox name='unitTypeSpecialty' options={unitTypes} label='What is your main unit type' />
+
+                            <RHFMultiCheckbox name='combatTypeSpecialty' options={combatTypes} label='What is your combat specialty' />
+
+                            <Stack spacing={1}>
+                                <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
+                                    Upload a screenshot of your profle
+                                </Typography>
+
+                                <RHFUpload
+                                    thumbnail
+                                    name='profileImageFile'
+                                    maxSize={3145728}
+                                    onDrop={(files) => handleDrop(files, 'profileImageFile')}
+                                    onDelete={() => handleRemoveFile('profileImageFile')}
+                                    onUpload={() => console.log(values.profileImageFile)}
+                                />
+                            </Stack>
+
+                            <Stack spacing={1}>
+                                <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
+                                    Upload a screenshot of your equipment
+                                </Typography>
+
+                                <RHFUpload
+                                    thumbnail
+                                    name='equipmentImageFile'
+                                    maxSize={3145728}
+                                    onDrop={(files) => handleDrop(files, 'equipmentImageFile')}
+                                    onDelete={() => handleRemoveFile('equipmentImageFile')}
+                                    onUpload={() => console.log(values.equipmentImageFile)}
+                                />
+                            </Stack>
+
+                            <Stack spacing={1}>
+                                <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
+                                    Upload a screenshot of your resources
+                                </Typography>
+
+                                <RHFUpload
+                                    thumbnail
+                                    name='resourcesImageFile'
+                                    maxSize={3145728}
+                                    onDrop={(files) => handleDrop(files, 'resourcesImageFile')}
+                                    onDelete={() => handleRemoveFile('resourcesImageFile`')}
+                                    onUpload={() => console.log(values.resourcesImageFile)}
+                                />
+                            </Stack>
+
+                            <Stack spacing={1}>
+                                <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
+                                    Upload a screenshot of your speedups
+                                </Typography>
+
+                                <RHFUpload
+                                    thumbnail
+                                    name='speedupsImageFile'
+                                    maxSize={3145728}
+                                    onDrop={(files) => handleDrop(files, 'speedupsImageFile')}
+                                    onDelete={() => handleRemoveFile('speedupsImageFile')}
+                                    onUpload={() => console.log(values.speedupsImageFile)}
+                                />
+                            </Stack>
+                        </Box>
+
+                        <Box mt={3}>
+                            <RHFTextField name="otherInfo" label="Other info (Optional)" multiline rows={3} />
+                        </Box>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Card sx={{ p: 3 }}>
+                        <LoadingButton type='submit' variant='contained' size='large' loading={isSubmitting} sx={{ ml: 2 }}>
+                            Send Application
+                        </LoadingButton>
+                    </Card>
+                </Grid>
+            </Grid>
+        </FormProvider>
+    )
+}

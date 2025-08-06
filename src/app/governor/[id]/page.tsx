@@ -1,3 +1,4 @@
+import GovernorDetailsPage from "@/page/GovernorDetailsPage"
 import generateMT from "@/utils/seo"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -10,7 +11,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function page({ params }: { params: Promise<{ id: string }> }) {
-    return (
-        <>governor id {(await params).id}</>
-    )
+    const { id } = await params
+    return (<GovernorDetailsPage governorId={id} />)
 }

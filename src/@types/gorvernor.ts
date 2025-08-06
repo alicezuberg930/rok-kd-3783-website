@@ -15,4 +15,5 @@ export type Gorvernor = {
     KvKKillsHigh: number | string
     KvKDeadsHigh: number | string
     KvKSeverelyWoundsHigh: number | string
+    scanDate?: string // only exist in details
 }
