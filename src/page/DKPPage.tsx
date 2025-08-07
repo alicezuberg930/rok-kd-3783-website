@@ -8,13 +8,15 @@ import CustomBreadcrumbs from '@/components/custom-breadcrumbs'
 import { PATH_DASHBOARD } from '@/routes/paths'
 import Scrollbar from '@/components/scrollbar'
 import { GorvernorTableRow, GorvernorTableToolbar } from '@/sections/dkp/list'
+import useGovernor from '@/hooks/api/useGovernor'
+import { getGovernorListAPI } from '@/utils/httpClient'
 
 const TABLE_HEAD = [
     { id: 'governorID', label: 'Governor ID', align: 'left' },
     { id: 'governorName', label: 'Governor Name', align: 'left' },
     { id: 'power', label: 'Power', align: 'left' },
-    { id: 'killPoints', label: 'Kill Points', align: 'left' },
-    { id: 'deads', label: 'Deads', align: 'left' },
+    { id: 'killPoints', label: 'DKP', align: 'left' },
+    { id: 'deads', label: 'Dead Troops', align: 'left' },
 ]
 
 export default function DKPPage() {
@@ -60,17 +62,13 @@ export default function DKPPage() {
 
     const isNotFound = (!dataFiltered.length && !!filterName) || (!dataFiltered.length && !!filterID)
 
+    const { getGovernorList } = useGovernor()
+
+    const { data: governorList, isLoading, isError } = getGovernorList()
+
     useEffect(() => {
-        const fetchDKPList = async () => {
-            try {
-                const response = await axios.get("https://script.google.com/macros/s/AKfycbypJB0uknAS7NPjDxRU5d2-tJjljYlrUVUq8n_PbjS4YRU-zU5A5y9rqXj4YGlyvDjt/exec")
-                setTableData(response.data.data)
-            } catch (error) {
-                console.error('Error fetching or parsing XLSX file:', error)
-            }
-        }
-        fetchDKPList()
-    }, [])
+        if (!isLoading && !isError && governorList) setTableData(governorList.data)
+    }, [governorList, isLoading, isError])
 
     const handleOpenConfirm = () => {
         setOpenConfirm(true)
@@ -177,6 +175,10 @@ export default function DKPPage() {
                                 )}
 
                                 <TableNoData isNotFound={isNotFound} />
+
+                                {isError && (
+                                    <TableNoData isNotFound={true} title='An error has occurred while loading data' />
+                                )}
                             </TableBody>
                         </Table>
                     </Scrollbar>
