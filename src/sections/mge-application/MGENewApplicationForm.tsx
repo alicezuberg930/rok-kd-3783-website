@@ -58,7 +58,7 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
 
     const NewApplicationSchema = Yup.object().shape({
         governorId: Yup.number().required('Governor ID is required'),
-        governorName: Yup.number().required('Governor name is required'),
+        governorName: Yup.string().required('Governor name is required'),
         profileImageFile: Yup.mixed().required('Profile image is required'),
         unitTypeSpecialty: Yup.array().min(1).required('Unit type specialty is required'),
         combatTypeSpecialty: Yup.array().min(1).required('Combat type specialty is required'),
