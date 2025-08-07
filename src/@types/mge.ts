@@ -1,3 +1,5 @@
+import { CustomFile } from "@/components/upload";
+
 export enum MGESpecialUnitType {
     infantry = 'infantry',
     cavalry = 'cavalry',
@@ -13,13 +15,13 @@ export enum MGESpecialCombatType {
 export type IMGEApplication = {
     governorId: number;
     governorName: string;
-    // profileImage: string;
+    profileImage: CustomFile | string | null;
     unitTypeSpecialty: string[];
     combatTypeSpecialty: string[];
     commanderName: string;
     vipLevel: number;
-    // equipmentImage: string;
-    // resourcesImage: string;
-    // speedupsImage: string;
+    equipmentImage: CustomFile | string | null;
+    resourcesImage: CustomFile | string | null;
+    speedupsImage: CustomFile | string | null;
     otherInfo?: string
 }

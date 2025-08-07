@@ -26,10 +26,10 @@ import { sendMEGApplicationAPI } from '@/utils/httpClient'
 // ----------------------------------------------------------------------
 
 interface FormValuesProps extends IMGEApplication {
-    profileImageFile: CustomFile | string | null
-    equipmentImageFile: CustomFile | string | null
-    resourcesImageFile: CustomFile | string | null
-    speedupsImageFile: CustomFile | string | null
+    // profileImageFile: CustomFile | string | null
+    // equipmentImage: CustomFile | string | null
+    // resourcesImage: CustomFile | string | null
+    // speedupsImage: CustomFile | string | null
 }
 
 type Props = {
@@ -62,14 +62,14 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
     const NewApplicationSchema = Yup.object().shape({
         governorId: Yup.number().required('Governor ID is required'),
         governorName: Yup.string().required('Governor name is required'),
-        profileImageFile: Yup.mixed().required('Profile image is required'),
+        profileImage: Yup.mixed().required('Profile image is required'),
         unitTypeSpecialty: Yup.array().min(1).required('Unit type specialty is required'),
         combatTypeSpecialty: Yup.array().min(1).required('Combat type specialty is required'),
         commanderName: Yup.string().required('Commander name is required'),
         vipLevel: Yup.number().required('VIP level is required').min(0, 'VIP level must be at least 0'),
-        equipmentImageFile: Yup.mixed().required('Equipment image is required'),
-        resourcesImageFile: Yup.mixed().required('Resources image is required'),
-        speedupsImageFile: Yup.mixed().required('Speedups image is required'),
+        equipmentImage: Yup.mixed().required('Equipment image is required'),
+        resourcesImage: Yup.mixed().required('Resources image is required'),
+        speedupsImage: Yup.mixed().required('Speedups image is required'),
     })
 
     const defaultValues = useMemo(() => ({
@@ -79,6 +79,7 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
         vipLevel: 0,
         unitTypeSpecialty: [],
         combatTypeSpecialty: [],
+        otherInfo: ''
     }), [currentMge])
 
     const methods = useForm<FormValuesProps>({
@@ -130,19 +131,19 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
             const newFile = Object.assign(acceptedFiles[0], {
                 preview: URL.createObjectURL(acceptedFiles[0]),
             })
-            if (name === 'profileImageFile') setValue('profileImageFile', newFile, { shouldValidate: true })
-            if (name === 'equipmentImageFile') setValue('equipmentImageFile', newFile, { shouldValidate: true })
-            if (name === 'resourcesImageFile') setValue('resourcesImageFile', newFile, { shouldValidate: true })
-            if (name === 'speedupsImageFile') setValue('speedupsImageFile', newFile, { shouldValidate: true })
+            if (name === 'profileImage') setValue('profileImage', newFile, { shouldValidate: true })
+            if (name === 'equipmentImage') setValue('equipmentImage', newFile, { shouldValidate: true })
+            if (name === 'resourcesImage') setValue('resourcesImage', newFile, { shouldValidate: true })
+            if (name === 'speedupsImage') setValue('speedupsImage', newFile, { shouldValidate: true })
         },
-        [setValue, values.profileImageFile, values.equipmentImageFile, values.resourcesImageFile, values.speedupsImageFile]
+        [setValue, values.profileImage, values.equipmentImage, values.resourcesImage, values.speedupsImage]
     )
 
     const handleRemoveFile = (name: string) => {
-        if (name === 'profileImageFile') setValue('profileImageFile', null)
-        if (name === 'equipmentImageFile') setValue('equipmentImageFile', null)
-        if (name === 'resourcesImageFile') setValue('resourcesImageFile', null)
-        if (name === 'speedupsImageFile') setValue('speedupsImageFile', null)
+        if (name === 'profileImage') setValue('profileImage', null)
+        if (name === 'equipmentImage') setValue('equipmentImage', null)
+        if (name === 'resourcesImage') setValue('resourcesImage', null)
+        if (name === 'speedupsImage') setValue('speedupsImage', null)
     }
 
     return (
@@ -180,11 +181,11 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
 
                                 <RHFUpload
                                     thumbnail
-                                    name='profileImageFile'
+                                    name='profileImage'
                                     maxSize={3145728}
-                                    onDrop={(files) => handleDrop(files, 'profileImageFile')}
-                                    onDelete={() => handleRemoveFile('profileImageFile')}
-                                    onUpload={() => console.log(values.profileImageFile)}
+                                    onDrop={(files) => handleDrop(files, 'profileImage')}
+                                    onDelete={() => handleRemoveFile('profileImage')}
+                                    onUpload={() => console.log(values.profileImage)}
                                 />
                             </Stack>
 
@@ -195,11 +196,11 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
 
                                 <RHFUpload
                                     thumbnail
-                                    name='equipmentImageFile'
+                                    name='equipmentImage'
                                     maxSize={3145728}
-                                    onDrop={(files) => handleDrop(files, 'equipmentImageFile')}
-                                    onDelete={() => handleRemoveFile('equipmentImageFile')}
-                                    onUpload={() => console.log(values.equipmentImageFile)}
+                                    onDrop={(files) => handleDrop(files, 'equipmentImage')}
+                                    onDelete={() => handleRemoveFile('equipmentImage')}
+                                    onUpload={() => console.log(values.equipmentImage)}
                                 />
                             </Stack>
 
@@ -210,11 +211,11 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
 
                                 <RHFUpload
                                     thumbnail
-                                    name='resourcesImageFile'
+                                    name='resourcesImage'
                                     maxSize={3145728}
-                                    onDrop={(files) => handleDrop(files, 'resourcesImageFile')}
-                                    onDelete={() => handleRemoveFile('resourcesImageFile`')}
-                                    onUpload={() => console.log(values.resourcesImageFile)}
+                                    onDrop={(files) => handleDrop(files, 'resourcesImage')}
+                                    onDelete={() => handleRemoveFile('resourcesImage`')}
+                                    onUpload={() => console.log(values.resourcesImage)}
                                 />
                             </Stack>
 
@@ -225,11 +226,11 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
 
                                 <RHFUpload
                                     thumbnail
-                                    name='speedupsImageFile'
+                                    name='speedupsImage'
                                     maxSize={3145728}
-                                    onDrop={(files) => handleDrop(files, 'speedupsImageFile')}
-                                    onDelete={() => handleRemoveFile('speedupsImageFile')}
-                                    onUpload={() => console.log(values.speedupsImageFile)}
+                                    onDrop={(files) => handleDrop(files, 'speedupsImage')}
+                                    onDelete={() => handleRemoveFile('speedupsImage')}
+                                    onUpload={() => console.log(values.speedupsImage)}
                                 />
                             </Stack>
                         </Box>
