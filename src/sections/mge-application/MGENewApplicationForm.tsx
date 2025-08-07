@@ -146,7 +146,6 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
                             <RHFTextField name='governorName' label='Type your name' />
                             <RHFTextField name='vipLevel' label='Type your VIP level' type='number' />
                             <RHFSelect name='commanderName' label='Choose the commander you want'>
-                                {/* <MenuItem value=''>SSS</MenuItem> */}
                                 {commanders.map(commander => (
                                     <MenuItem key={commander.value} value={commander.value}>
                                         {commander.label}
