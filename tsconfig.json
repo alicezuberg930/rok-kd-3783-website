@@ -3,8 +3,9 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
     ],
+    "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

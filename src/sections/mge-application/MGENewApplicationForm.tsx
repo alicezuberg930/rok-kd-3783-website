@@ -20,6 +20,8 @@ import FormProvider, {
     RHFMultiCheckbox,
 } from '@/components/hook-form'
 import { useRouter } from 'next/navigation'
+import { useSnackbar } from '@/components/snackbar'
+import { sendMEGApplicationAPI } from '@/utils/httpClient'
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +39,7 @@ type Props = {
 
 export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
     const navigate = useRouter()
+    const { enqueueSnackbar } = useSnackbar()
 
     const unitTypes = [
         { value: 'infantry', label: 'Infantry' },
@@ -104,10 +107,23 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
     // }, [isEdit, currentMge])
 
     const onSubmit = async (data: FormValuesProps) => {
-        console.log(data)
+        const formData = new FormData()
+        Object.entries(data).forEach(([key, value]) => {
+            if (value instanceof File || typeof value === 'string') {
+                formData.append(key, value)
+            } else if (Array.isArray(value)) {
+                formData.append(key, JSON.stringify(value))
+            } else {
+                formData.append(key, String(value))
+            }
+        })
+        try {
+            const response = await sendMEGApplicationAPI(formData)
+            enqueueSnackbar('Application submitted successfully', { variant: 'success' })
+        } catch (error) {
+            enqueueSnackbar('Failed to submit application', { variant: 'error' })
+        }
     }
-
-    console.log('values', values)
 
     const handleDrop = useCallback(
         (acceptedFiles: File[], name: string) => {

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Container, Stack, Typography } from '@mui/material'
 import useResponsive from '@/hooks/useResponsive';
+import Link from 'next/link';
 
 export default function HomePage() {
     const isMobile = useResponsive('down', 'sm');
@@ -14,14 +15,18 @@ export default function HomePage() {
             <Stack direction={isMobile ? 'column' : 'row'} spacing={2} mt={4}>
                 <Card sx={{ p: 3, flex: 1, textAlign: 'center' }}>
                     <Typography variant="h6" gutterBottom>MGE Applications</Typography>
-                    <Button variant="contained" color="primary" href="/apply-mge">
-                        Apply
+                    <Button variant="contained" color="primary">
+                        <Link href="/apply-mge" >
+                            Apply
+                        </Link>
                     </Button>
                 </Card>
                 <Card sx={{ p: 3, flex: 1, textAlign: 'center' }}>
                     <Typography variant="h6" gutterBottom>DKP List</Typography>
-                    <Button variant="contained" color="primary" href="/dkp">
-                        View List
+                    <Button variant="contained" color="primary">
+                        <Link href="/dkp" >
+                            View List
+                        </Link>
                     </Button>
                 </Card>
             </Stack>

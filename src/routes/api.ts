@@ -7,5 +7,5 @@ export const API_PATH = {
         edit: (id: string) => "",
         delete: (id: string) => ""
     },
-
+    mge: "/mges"
 }

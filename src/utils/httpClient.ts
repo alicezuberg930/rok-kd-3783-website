@@ -7,3 +7,7 @@ export const getProductListAPI = async () => {
     return response.data
 }
 
+export const sendMEGApplicationAPI = async (form: FormData) => {
+    let response = await axios({ url: API_PATH.mge, method: "POST", data: form })
+    return response.data
+}
