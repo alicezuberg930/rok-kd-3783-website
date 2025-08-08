@@ -6,7 +6,7 @@ import { VariableSizeList, ListChildComponentProps } from 'react-window'
 import { qnas } from '@/_mock/preliminary'
 // import newData from '@/assets/rok_questions.json'
 // @mui
-import { Alert, Box, Container, InputAdornment, List, ListItem, ListItemText, Snackbar, TextField, Typography } from '@mui/material'
+import { Box, Container, InputAdornment, List, ListItem, ListItemText, Stack, TextField, Typography } from '@mui/material'
 // components
 import Iconify from '@/components/iconify'
 import EmptyContent from '@/components/empty-content'
@@ -54,7 +54,7 @@ export default function page() {
         }, [index, setSize])
 
         return (
-            <Box
+            <Stack
                 ref={(node: HTMLDivElement | null) => {
                     rowRef.current = node
                     measure(node)
@@ -63,10 +63,11 @@ export default function page() {
                 style={style}
                 sx={{
                     px: 2,
-                    alignContent: 'center',
                     borderBottom: '1px solid',
                     borderColor: 'divider',
                 }}
+                direction='column'
+                justifyContent='center'
             >
                 <Typography variant='subtitle1' className='line-clamp-2'>
                     {highlightText(item.question, debouncedFilterName)}
@@ -74,7 +75,7 @@ export default function page() {
                 <Typography variant='h6'>
                     Answer: {item.answer}
                 </Typography>
-            </Box>
+            </Stack >
         )
     }
 

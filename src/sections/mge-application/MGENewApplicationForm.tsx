@@ -57,6 +57,7 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
         { value: 'Charles Martel', label: 'Charles Martel' },
         { value: 'El Cid', label: 'El Cid' },
         { value: 'Ragnar Lodbrok', label: 'Ragnar Lodbrok' },
+        { value: 'Julius Caesar', label: 'Julius Caesar' },
     ]
 
     const NewApplicationSchema = Yup.object().shape({
