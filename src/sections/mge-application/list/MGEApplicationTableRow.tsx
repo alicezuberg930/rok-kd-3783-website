@@ -70,7 +70,7 @@ export default function MGEApplicationTableRow({
         <TableCell align='left'>
           <Stack flexWrap='wrap' gap={1}>
             {unitTypeSpecialty.map(type => (
-              <Label color='info' width='fit-content'>{type}</Label>
+              <Label color='info' width='fit-content' key={type}>{type}</Label>
             ))}
           </Stack>
         </TableCell>
@@ -78,7 +78,7 @@ export default function MGEApplicationTableRow({
         <TableCell align='left'>
           <Stack flexWrap='wrap' gap={1} width='fit-content'>
             {combatTypeSpecialty.map(type => (
-              <Label color='info'>{type}</Label>
+              <Label color='info' key={type}>{type}</Label>
             ))}
           </Stack>
         </TableCell>
