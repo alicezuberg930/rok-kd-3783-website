@@ -1,11 +1,11 @@
 'use client'
-import { Gorvernor } from "@/@types/gorvernor";
+import { IGorvernor } from "@/@types/gorvernor";
 import { Card, Container } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function GovernorDetailsPage({ governorId }: { governorId: string }) {
-    const [governor, setGovernor] = useState<Gorvernor | null>(null)
+    const [governor, setGovernor] = useState<IGorvernor | null>(null)
 
     useEffect(() => {
         const fetchGovernorDetails = async () => {

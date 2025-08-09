@@ -1,25 +1,26 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { getComparator, TableHeadCustom, TableNoData, TablePaginationCustom, TableSkeleton, useTable } from '@/components/table'
-import { IGorvernor } from '@/@types/gorvernor'
 import { Card, Container, Table, TableBody, TableContainer } from '@mui/material'
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs'
 import { PATH_DASHBOARD } from '@/routes/paths'
 import Scrollbar from '@/components/scrollbar'
-import { GorvernorTableRow, GorvernorTableToolbar } from '@/sections/dkp/list'
-import useGovernor from '@/hooks/api/useGovernor'
-import { getGovernorListAPI } from '@/utils/httpClient'
+import useMGE from '@/hooks/api/useMGE'
+import { IMGEApplication } from '@/@types/mge'
+import { MGEApplicationTableRow, MGEApplicationTableToolbar } from '@/sections/mge-application/list'
+import { useRouter } from 'next/navigation'
 
 const TABLE_HEAD = [
     { id: 'governorID', label: 'Governor ID', align: 'left' },
     { id: 'governorName', label: 'Governor Name', align: 'left' },
-    { id: 'power', label: 'Power', align: 'left' },
-    { id: 'killPoints', label: 'DKP', align: 'left' },
-    { id: 'deads', label: 'Dead Troops', align: 'left' },
+    { id: 'unitTypeSpecialty', label: 'Unit type', align: 'left' },
+    { id: 'combatTypeSpecialty', label: 'Combat type', align: 'left' },
+    { id: 'vipLevel', label: 'VIP', align: 'left' },
+    { id: 'commanderName', label: 'Commander wanted', align: 'left' },
+    { id: '', label: '', align: 'left' },
 ]
 
-export default function DKPPage() {
+export default function MGEListPage() {
     const {
         dense,
         page,
@@ -39,7 +40,7 @@ export default function DKPPage() {
         onChangeRowsPerPage,
     } = useTable()
 
-    const [tableData, setTableData] = useState<IGorvernor[]>([])
+    const [tableData, setTableData] = useState<IMGEApplication[]>([])
 
     const [filterName, setFilterName] = useState<string>('')
 
@@ -62,13 +63,19 @@ export default function DKPPage() {
 
     const isNotFound = (!dataFiltered.length && !!filterName) || (!dataFiltered.length && !!filterID)
 
-    const { getGovernorList } = useGovernor()
+    const { getMGEList } = useMGE()
 
-    const { data: governorList, isLoading, isError } = getGovernorList()
+    const { data: mgeList, isLoading, isError } = getMGEList()
 
     useEffect(() => {
-        if (!isLoading && !isError && governorList) setTableData(governorList.data)
-    }, [governorList, isLoading, isError])
+        if (!isLoading && !isError && mgeList) setTableData(mgeList.data)
+    }, [mgeList, isLoading, isError])
+
+    const navigate = useRouter()
+
+    const handleShowMoreInfo = (id: number) => {
+        navigate.push(`/mge-application/${id}`)
+    }
 
     const handleOpenConfirm = () => {
         setOpenConfirm(true)
@@ -101,7 +108,7 @@ export default function DKPPage() {
     // }
 
     const handleDeleteRows = (selectedRows: string[]) => {
-        const deleteRows = tableData.filter((row) => !selectedRows.includes(String(row.governorID)))
+        const deleteRows = tableData.filter((row) => !selectedRows.includes(String(row.governorId)))
         setSelected([])
         setTableData(deleteRows)
 
@@ -125,16 +132,16 @@ export default function DKPPage() {
     return (
         <Container maxWidth='xl'>
             <CustomBreadcrumbs
-                heading="DKP List"
+                heading="MGE Application List"
                 links={[
                     { name: 'Home', href: PATH_DASHBOARD.root },
-                    { name: 'DKP', href: '#' },
+                    { name: 'MGE', href: '#' },
                     { name: 'List' },
                 ]}
             />
 
             <Card>
-                <GorvernorTableToolbar
+                <MGEApplicationTableToolbar
                     isFiltered={isFiltered}
                     filterName={filterName}
                     filterID={filterID}
@@ -157,10 +164,11 @@ export default function DKPPage() {
 
                             <TableBody>
                                 {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
-                                    <GorvernorTableRow
-                                        key={row.governorID}
+                                    <MGEApplicationTableRow
+                                        key={row.governorId}
                                         row={row}
-                                        selected={selected.includes(String(row.governorID))}
+                                        selected={selected.includes(String(row.governorId))}
+                                        showMoreInfo={(id) => handleShowMoreInfo(id)}
                                     />
                                 ))}
 
@@ -207,7 +215,7 @@ function applyFilter({
     filterName,
     filterID
 }: {
-    inputData: IGorvernor[]
+    inputData: IMGEApplication[]
     comparator: (a: any, b: any) => number
     filterName: string
     filterID: string
@@ -227,7 +235,7 @@ function applyFilter({
     }
 
     if (filterID) {
-        inputData = inputData.filter((input) => String(input.governorID).indexOf(filterID) !== -1)
+        inputData = inputData.filter((input) => String(input.governorId).indexOf(filterID) !== -1)
     }
 
     return inputData

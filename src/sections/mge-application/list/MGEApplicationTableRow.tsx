@@ -17,22 +17,24 @@ import Iconify from '@/components/iconify';
 import MenuPopover from '@/components/menu-popover';
 // type
 import { fNumber } from '@/utils/formatNumber';
-import { IGorvernor } from '@/@types/gorvernor';
+import { IMGEApplication } from '@/@types/mge';
 import Link from 'next/link';
 import { PATH_DASHBOARD } from '@/routes/paths';
 
 // --------------------------------------------------------------------
 
 type Props = {
-  row: IGorvernor;
+  row: IMGEApplication;
   selected: boolean;
+  showMoreInfo: (id: number) => void
 };
 
-export default function GorvernorTableRow({
+export default function MGEApplicationTableRow({
   row,
   selected,
+  showMoreInfo
 }: Props) {
-  const { governorID, governorName, power, killPoints, deads } = row;
+  const { governorId, governorName, vipLevel, unitTypeSpecialty, combatTypeSpecialty, commanderName } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -58,9 +60,7 @@ export default function GorvernorTableRow({
     <>
       <TableRow hover selected={selected}>
         <TableCell align='left'>
-          <Link href={PATH_DASHBOARD.governor.view(governorID)}>
-            {governorID}
-          </Link>
+          {governorId}
         </TableCell>
 
         <TableCell align='left'>
@@ -68,21 +68,34 @@ export default function GorvernorTableRow({
         </TableCell>
 
         <TableCell align='left'>
-          {fNumber(power)}
+          <Stack flexWrap='wrap' gap={1}>
+            {unitTypeSpecialty.map(type => (
+              <Label color='info' width='fit-content'>{type}</Label>
+            ))}
+          </Stack>
         </TableCell>
 
         <TableCell align='left'>
-          {fNumber(killPoints)}
+          <Stack flexWrap='wrap' gap={1} width='fit-content'>
+            {combatTypeSpecialty.map(type => (
+              <Label color='info'>{type}</Label>
+            ))}
+          </Stack>
         </TableCell>
 
         <TableCell align='left'>
-          {fNumber(deads)}
+          {vipLevel}
         </TableCell>
-        {/* <TableCell align='right'>
+
+        <TableCell align='left'>
+          {commanderName}
+        </TableCell>
+
+        <TableCell align='right'>
           <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
             <Iconify icon='eva:more-vertical-fill' />
           </IconButton>
-        </TableCell> */}
+        </TableCell>
       </TableRow >
 
       <MenuPopover
@@ -93,13 +106,13 @@ export default function GorvernorTableRow({
       >
         <MenuItem
           onClick={() => {
-            handleOpenConfirm();
+            showMoreInfo(governorId)
             handleClosePopover();
           }}
           sx={{ color: 'secondary.main' }}
         >
           <Iconify icon='eva:checkmark-fill' />
-          Duyệt
+          More info
         </MenuItem>
 
         {/* <MenuItem

@@ -21,10 +21,18 @@ export default function HomePage() {
                 }}
             >
                 <Card sx={{ p: 3, flex: 1, textAlign: 'center' }}>
-                    <Typography variant="h6" gutterBottom>MGE Applications</Typography>
+                    <Typography variant="h6" gutterBottom>Apply for MGE</Typography>
                     <Button variant="contained" color="primary">
-                        <Link href="/apply-mge" >
+                        <Link href="/mge-apply" >
                             Apply
+                        </Link>
+                    </Button>
+                </Card>
+                <Card sx={{ p: 3, flex: 1, textAlign: 'center' }}>
+                    <Typography variant="h6" gutterBottom>MGE Application list</Typography>
+                    <Button variant="contained" color="primary">
+                        <Link href="/mge-list" >
+                            View list
                         </Link>
                     </Button>
                 </Card>

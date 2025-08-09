@@ -10,7 +10,7 @@ import { Card, Grid, Stack, Typography, MenuItem, Box } from '@mui/material'
 // routes
 import { PATH_DASHBOARD } from '@/routes/paths'
 // @types
-import { IMGEApplication } from '@/@types/mge'
+import { IMGEApplicationForm } from '@/@types/mge'
 // components
 import { CustomFile } from '@/components/upload'
 import FormProvider, {
@@ -25,7 +25,7 @@ import { sendMEGApplicationAPI } from '@/utils/httpClient'
 
 // ----------------------------------------------------------------------
 
-interface FormValuesProps extends IMGEApplication {
+interface FormValuesProps extends IMGEApplicationForm {
     // profileImageFile: CustomFile | string | null
     // equipmentImage: CustomFile | string | null
     // resourcesImage: CustomFile | string | null
@@ -34,7 +34,7 @@ interface FormValuesProps extends IMGEApplication {
 
 type Props = {
     isEdit?: boolean
-    currentMge?: IMGEApplication
+    currentMge?: IMGEApplicationForm
 }
 
 export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
@@ -109,18 +109,18 @@ export default function MGENewApplicationForm({ isEdit, currentMge }: Props) {
     // }, [isEdit, currentMge])
 
     const onSubmit = async (data: FormValuesProps) => {
-        const formData = new FormData()
+        const form = new FormData()
         Object.entries(data).forEach(([key, value]) => {
             if (value instanceof File || typeof value === 'string') {
-                formData.append(key, value)
+                form.append(key, value)
             } else if (Array.isArray(value)) {
-                formData.append(key, JSON.stringify(value))
+                form.append(key, JSON.stringify(value))
             } else {
-                formData.append(key, String(value))
+                form.append(key, String(value))
             }
         })
         try {
-            const response = await sendMEGApplicationAPI(formData)
+            const response = await sendMEGApplicationAPI({ form })
             enqueueSnackbar('Application submitted successfully', { variant: 'success' })
         } catch (error) {
             enqueueSnackbar('Failed to submit application', { variant: 'error' })

@@ -12,7 +12,7 @@ export enum MGESpecialCombatType {
     openfield = 'openfield',
 }
 
-export type IMGEApplication = {
+export type IMGEApplicationForm = {
     governorId: number;
     governorName: string;
     profileImage: CustomFile | string | null;
@@ -24,4 +24,8 @@ export type IMGEApplication = {
     resourcesImage: CustomFile | string | null;
     speedupsImage: CustomFile | string | null;
     otherInfo?: string
+}
+
+export type IMGEApplication = IMGEApplicationForm & {
+    _id: string
 }

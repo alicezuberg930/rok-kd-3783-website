@@ -6,7 +6,7 @@ import { PATH_DASHBOARD } from '@/routes/paths';
 import CustomBreadcrumbs from '@/components/custom-breadcrumbs';
 import MGENewApplicationForm from '@/sections/mge-application/MGENewApplicationForm';
 
-export default function MGECreateApplicationPage() {
+export default function MGEApplyPage() {
     return (
         <Container maxWidth='xl'>
             <CustomBreadcrumbs

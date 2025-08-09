@@ -1,4 +1,4 @@
-export type Gorvernor = {
+export type IGorvernor = {
     governorName: string
     governorID: number
     power: number
