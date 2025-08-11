@@ -5,6 +5,7 @@ import SnackbarProvider from "@/components/snackbar";
 import HomeLayout from "@/layouts/home";
 import ThemeProvider from "@/theme/ThemeProvider";
 import ReduxProvider from "@/redux/ReduxProvider";
+import { Analytics } from "@vercel/analytics/next"
 
 // scroll bar
 import 'simplebar-react/dist/simplebar.min.css';
@@ -49,6 +50,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </MotionLazyContainer>
           </ThemeProvider>
         </ReduxProvider>
+        {/* for website traffic analytics */}
+        <Analytics />
       </body>
     </html>
   );
