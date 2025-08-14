@@ -5776,10 +5776,6 @@ export const qnas = [
         "answer": "Francis II"
     },
     {
-        "question": "The novel Romance of the Three Kingdoms begins near the end of which Chinese Dynasty",
-        "answer": "Han"
-    },
-    {
         "question": "The process of splitting atoms is known as",
         "answer": "Fission"
     },
@@ -5838,10 +5834,6 @@ export const qnas = [
     {
         "question": "What causes the distinctive smell in the air after it rains?",
         "answer": "The influence of actinomycetes"
-    },
-    {
-        "question": "What Chieftain from the Ceroli Crisis event is well-versed in poison magic?",
-        "answer": "Dekar"
     },
     {
         "question": "What color is a polar bears skin?",
@@ -6198,10 +6190,6 @@ export const qnas = [
     {
         "question": "Which of these avatar frames can be obtained from Ceroli Crisis event?",
         "answer": "Undersea Kingdom"
-    },
-    {
-        "question": "Which of these commanders gets the ability to convert some slain units into severely wound units when attacking a city?",
-        "answer": "Charlemagne"
     },
     {
         "question": "Which of these commanders was able to defeat the great Charles in the battle?",

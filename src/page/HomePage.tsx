@@ -52,6 +52,14 @@ export default function HomePage() {
                         </Link>
                     </Button>
                 </Card>
+                <Card sx={{ p: 3, flex: 1, textAlign: 'center' }}>
+                    <Typography variant="h6" gutterBottom>Equipment Builder</Typography>
+                    <Button variant="contained" color="primary">
+                        <Link href="/equipment-builder" >
+                            Start building
+                        </Link>
+                    </Button>
+                </Card>
             </Box>
         </Container>
     )
