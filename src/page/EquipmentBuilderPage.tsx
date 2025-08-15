@@ -16,7 +16,7 @@ const equipmentStyles = (grade?: Grade) => {
         boxShadow: `inset -1px -1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}, inset 1px 1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}`,
         borderRadius: 1,
         cursor: 'pointer',
-        background: grade ? 'transparent' : 'gray',
+        background: grade ? 'transparent' : 'GrayText',
     }
 }
 
@@ -51,6 +51,14 @@ export default function EquipmentBuilderPage() {
         calculateOverallStats()
     }, [currentEquipments])
 
+    const removeEquipment = (equipment: Equipment) => {
+        if (currentAccessoriesSlot) {
+
+        } else {
+
+        }
+    }
+
     const calculateOverallStats = () => {
         const allStats: { attributeType: StatType | string, attributeValue?: number }[] = []
         Object.entries(currentEquipments).map(eq => {
@@ -61,14 +69,13 @@ export default function EquipmentBuilderPage() {
                         allStats.push({ attributeType: attribute.statType, attributeValue: attribute.statValue })
                     } else {
                         const foundAttribute = allStats.find(stat => stat.attributeType === attribute.statType)
-                        if (foundAttribute && foundAttribute.attributeValue)
+                        if (foundAttribute && foundAttribute.attributeValue) {
                             foundAttribute.attributeValue += attribute.statValue
+                        }
                     }
                 })
             }
-            if (thisEq.attribute) {
-                allStats.push({ attributeType: thisEq.attribute })
-            }
+            if (thisEq.attribute) allStats.push({ attributeType: thisEq.attribute })
         })
         setOverAllStats(allStats)
     }
@@ -264,37 +271,36 @@ export default function EquipmentBuilderPage() {
                         </Button>
                     </Stack>
 
-                    <Card sx={{ mx: 2, mt: 3, bgcolor: 'GrayText' }}>
+                    <Card sx={{ mt: 3, bgcolor: 'GrayText', p: 2 }}>
+                        <Typography gutterBottom variant="subtitle1" color='white'>Total Stats Value</Typography>
                         {overAllStats.length ? (
-                            <Box>
-                                <List>
-                                    {overAllStats.length && overAllStats.map((stat, index) => (
-                                        <ListItem key={index} sx={{ paddingY: 0.2, display: 'flex', alignItems: 'center' }}>
-                                            <ListItemIcon sx={{ mr: 1 }}>
-                                                <Iconify icon="mdi:circle" color='white' width={8} />
-                                            </ListItemIcon>
+                            <List>
+                                {overAllStats.length && overAllStats.map((stat, index) => (
+                                    <ListItem key={index} sx={{ py: 0.2, px: 0, display: 'flex', alignItems: 'center' }}>
+                                        <ListItemIcon sx={{ mr: 1 }}>
+                                            <Iconify icon="mdi:circle" color='white' width={8} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            sx={{ flex: 1 }}
+                                            primary={
+                                                <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'white' }}>
+                                                    {stat.attributeType}
+                                                </Typography>
+                                            }
+                                        />
+                                        {stat.attributeValue && (
                                             <ListItemText
-                                                sx={{ flex: 1 }}
+                                                sx={{ flex: 'none' }}
                                                 primary={
                                                     <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'white' }}>
-                                                        {stat.attributeType}
+                                                        +{stat.attributeValue}%
                                                     </Typography>
                                                 }
                                             />
-                                            {stat.attributeValue && (
-                                                <ListItemText
-                                                    primary={
-                                                        <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'white' }}>
-                                                            +{stat.attributeValue}%
-                                                        </Typography>
-                                                    }
-                                                    sx={{ flex: 'none' }}
-                                                />
-                                            )}
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Box>
+                                        )}
+                                    </ListItem>
+                                ))}
+                            </List>
                         ) : (
                             <Box py={4}>
                                 <Typography align="center" sx={{ fontSize: '0.8rem', color: 'white' }} gutterBottom>

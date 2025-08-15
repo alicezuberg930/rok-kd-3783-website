@@ -957,7 +957,7 @@ export const qnas = [
     },
     {
         "question": "In RoK, which Kingdom Chronicles chapter requires all fog in your kingdom to be fully explored?",
-        "answer": "Long Peace"
+        "answer": "Ultimate Clarity"
     },
     {
         "question": "In RoK, which of Sun Tzu's skills is enhanced by his expertise skill?",
@@ -5480,10 +5480,6 @@ export const qnas = [
         "answer": "Impact wrench"
     },
     {
-        "question": "In RoK, which Kingdom Chronicales chapter requires all fog in your kingdom to be fully explored?",
-        "answer": "Ultimate Clarity"
-    },
-    {
         "question": "which of the following statements is a 6-month-old human baby most likely to make?",
         "answer": "Mama"
     },
@@ -5814,10 +5810,6 @@ export const qnas = [
     {
         "question": "Wealthy family in Florence",
         "answer": "Medicis"
-    },
-    {
-        "question": "What animal is the 'Tigris' named after in ancient Greek",
-        "answer": "Tiger"
     },
     {
         "question": "What are the Books of Covenant used for?",
