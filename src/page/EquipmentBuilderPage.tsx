@@ -3,20 +3,24 @@ import { Equipment } from "@/@types/equipment";
 import { Category, Grade, GradeColor, StatType } from "@/@types/equipment";
 import { equipments } from "@/_mock/equipments";
 import { deepObjectComparison } from "@/utils/comparison";
-import { Box, Button, Card, Container, List, ListItem, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, Container, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import { useSnackbar } from "@/components/snackbar";
 import React, { useEffect, useState } from "react";
 import Iconify from "@/components/iconify";
+import EquipmentSetInfo from "@/sections/equipment-builder/EquipmentSetInfo";
+import FilterEquipments from "@/sections/equipment-builder/FilterEquipments";
+import { getComparator } from "@/components/table";
 
 const equipmentStyles = (grade?: Grade) => {
     return {
+        position: 'relative',
         height: 0,
         paddingBottom: '100%',
         boxShadow: `inset -1px -1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}, inset 1px 1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}`,
         borderRadius: 1,
         cursor: 'pointer',
-        background: grade ? 'transparent' : 'GrayText',
+        background: grade ? 'transparent' : 'rgba(128,128,128,.6)',
     }
 }
 
@@ -29,118 +33,174 @@ const imageContainerStyles = {
     transform: 'rotate(45deg)'
 }
 
+const gridColumnRows = [
+    { gridColumn: 4, gridRow: 0 },
+    { gridColumn: 2, gridRow: 2 },
+    { gridColumn: 3, gridRow: 2 },
+    { gridColumn: 3, gridRow: 3 },
+    { gridColumn: 2, gridRow: 3 },
+    { gridRow: 4, gridColumn: 0 },
+    { gridRow: 3, gridColumn: 0 },
+    { gridRow: 4, gridColumn: 2 }
+]
+
+const CategorySet = [Category.helmet, Category.weapon, Category.chest, Category.gloves, Category.legs, Category.boots, Category.accessories, Category.accessories,]
+
 type Props = {
-    helmet?: Equipment
-    chest?: Equipment
-    weapon?: Equipment
-    gloves?: Equipment
-    legs?: Equipment
-    accessories1?: Equipment
-    accessories2?: Equipment
-    boots?: Equipment
+    helmet: Equipment | null
+    weapon: Equipment | null
+    chest: Equipment | null
+    gloves: Equipment | null
+    legs: Equipment | null
+    boots: Equipment | null
+    accessories1: Equipment | null
+    accessories2: Equipment | null
+}
+
+const baseSet: Props = {
+    helmet: null,
+    weapon: null,
+    chest: null,
+    gloves: null,
+    legs: null,
+    boots: null,
+    accessories1: null,
+    accessories2: null
 }
 
 export default function EquipmentBuilderPage() {
-    const [currentEquipments, setCurrentEquipments] = useState<Props>({})
-    const [equipmentList, setEquipmentList] = useState<Equipment[]>(equipments)
+    const [currentSet, setCurrentSet] = useState<Props>(baseSet)
     const [currentAccessoriesSlot, setCurrentAccessoriesSlot] = useState<string | null>(null)
     const [overAllStats, setOverAllStats] = useState<{ attributeType: StatType | string, attributeValue?: number }[]>([])
     const { enqueueSnackbar } = useSnackbar()
+    // filter 
+    const [filterName, setFilterName] = useState<string>("")
+    const [filterCategory, setFilterCategory] = useState<string>("All")
+    const [filterGrade, setFilterGrade] = useState<string>("All")
+
+    const dataFiltered: Equipment[] = applyFilter({
+        inputData: equipments,
+        filterName,
+        filterCategory,
+        filterGrade
+    })
 
     useEffect(() => {
         calculateOverallStats()
-    }, [currentEquipments])
-
-    const removeEquipment = (equipment: Equipment) => {
-        if (currentAccessoriesSlot) {
-
-        } else {
-
-        }
-    }
+    }, [currentSet])
 
     const calculateOverallStats = () => {
         const allStats: { attributeType: StatType | string, attributeValue?: number }[] = []
-        Object.entries(currentEquipments).map(eq => {
-            let thisEq: Equipment = eq[1]
-            if (thisEq.attributes) {
-                thisEq.attributes.forEach(attribute => {
-                    if (!allStats.find(stat => stat.attributeType === attribute.statType)) {
-                        allStats.push({ attributeType: attribute.statType, attributeValue: attribute.statValue })
-                    } else {
-                        const foundAttribute = allStats.find(stat => stat.attributeType === attribute.statType)
-                        if (foundAttribute && foundAttribute.attributeValue) {
-                            foundAttribute.attributeValue += attribute.statValue
+        Object.entries(currentSet).map(eq => {
+            if (eq[1] != null) {
+                let chosenSet: Equipment = eq[1]
+                if (chosenSet.attributes) {
+                    chosenSet.attributes.forEach(attribute => {
+                        if (!allStats.find(stat => stat.attributeType === attribute.statType)) {
+                            allStats.push({ attributeType: attribute.statType, attributeValue: attribute.statValue })
+                        } else {
+                            const foundAttribute = allStats.find(stat => stat.attributeType === attribute.statType)
+                            if (foundAttribute && foundAttribute.attributeValue) {
+                                foundAttribute.attributeValue += attribute.statValue
+                            }
                         }
-                    }
-                })
+                    })
+                }
+                if (chosenSet.attribute) allStats.push({ attributeType: chosenSet.attribute })
             }
-            if (thisEq.attribute) allStats.push({ attributeType: thisEq.attribute })
         })
+        allStats.sort((a, b) => String(a.attributeType).localeCompare(String(b.attributeType)))
         setOverAllStats(allStats)
     }
 
     const setEquipment = (equipment: Equipment) => {
         if (equipment.category === Category.accessories) {
             // If I have already chosen the first accessories but still haven't clicked on the accessories slot
-            if (currentEquipments.accessories1 && !currentAccessoriesSlot) {
+            if (currentSet.accessories1 && !currentAccessoriesSlot) {
                 // If the 2nd equipment I choose is the same as the first accessories 
-                if (deepObjectComparison(currentEquipments.accessories1, equipment)) {
+                if (deepObjectComparison(currentSet.accessories1, equipment)) {
                     enqueueSnackbar("Cannot choose the same accessories twice", { variant: 'error' })
                     return
                 }
-                setCurrentEquipments(prev => ({ ...prev, accessories2: equipment }))
+                setCurrentSet(prev => ({ ...prev, accessories2: equipment }))
             }
             // If I haven't chosen the first accessories and haven't clicked on the accessories slot
-            if (!currentEquipments.accessories1 && !currentAccessoriesSlot) {
-                setCurrentEquipments(prev => ({ ...prev, accessories1: equipment }))
+            if (!currentSet.accessories1 && !currentAccessoriesSlot) {
+                setCurrentSet(prev => ({ ...prev, accessories1: equipment }))
             }
             // If I already clicked on the accessories slot (1 or 2)
             if (currentAccessoriesSlot) {
                 // If I clicked on the 2nd accessories slot but still haven't chosen an item. it compare the item i choose with the 1st accessories
-                if (currentEquipments.accessories1 && currentAccessoriesSlot === "accessories2" && !currentEquipments.accessories2 && deepObjectComparison(currentEquipments.accessories1, equipment)) {
+                if (currentSet.accessories1 && currentAccessoriesSlot === "accessories2" && !currentSet.accessories2 && deepObjectComparison(currentSet.accessories1, equipment)) {
                     enqueueSnackbar("Cannot choose the same accessories twice", { variant: 'error' })
                     return
                 }
                 // If I clicked on the 1nd accessories slot but still haven't chosen an item. it compare the item i choose with the 2nd accessories
-                if (currentEquipments.accessories2 && currentAccessoriesSlot === "accessories1" && !currentEquipments.accessories1 && deepObjectComparison(currentEquipments.accessories2, equipment)) {
+                if (currentSet.accessories2 && currentAccessoriesSlot === "accessories1" && !currentSet.accessories1 && deepObjectComparison(currentSet.accessories2, equipment)) {
                     enqueueSnackbar("Cannot choose the same accessories twice", { variant: 'error' })
                     return
                 }
                 // If both accessories has been chosen but I want to change 1 of them
-                if (currentEquipments.accessories1 && currentEquipments.accessories2) {
-                    if (currentAccessoriesSlot === "accessories1" && deepObjectComparison(currentEquipments.accessories2, equipment)) {
+                if (currentSet.accessories1 && currentSet.accessories2) {
+                    if (currentAccessoriesSlot === "accessories1" && deepObjectComparison(currentSet.accessories2, equipment)) {
                         enqueueSnackbar("Cannot choose the same accessories twice", { variant: 'error' })
                         return
                     }
-                    if (currentAccessoriesSlot === "accessories2" && deepObjectComparison(currentEquipments.accessories1, equipment)) {
+                    if (currentAccessoriesSlot === "accessories2" && deepObjectComparison(currentSet.accessories1, equipment)) {
                         enqueueSnackbar("Cannot choose the same accessories twice", { variant: 'error' })
                         return
                     }
                 }
-                setCurrentEquipments(prev => ({ ...prev, [currentAccessoriesSlot]: equipment }))
+                setCurrentSet(prev => ({ ...prev, [currentAccessoriesSlot]: equipment }))
             }
         } else {
-            setCurrentEquipments(prev => ({ ...prev, [equipment.category]: equipment }))
+            setCurrentSet(prev => ({ ...prev, [equipment.category]: equipment }))
         }
     }
 
     const chooseEquipment = (category: Category, accessoriesSlot?: string) => {
         if (accessoriesSlot) setCurrentAccessoriesSlot(accessoriesSlot)
-        setEquipmentList(equipments.filter(equipment => equipment.category === category))
+        setFilterCategory(category)
     }
 
     const resetEquipments = () => {
-        setEquipmentList(equipments)
-        setCurrentEquipments({})
+        setCurrentSet(baseSet)
         setCurrentAccessoriesSlot(null)
         setOverAllStats([])
+        setFilterName("")
+        setFilterCategory("All")
+        setFilterGrade("All")
+    }
+
+    const removeEquipment = (slot: string) => {
+        setCurrentSet(prev => ({ ...prev, [slot]: null }))
+    }
+
+    const handleFilterName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFilterName(event.target.value)
+    }
+
+    const handleFilterCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFilterCategory(event.target.value)
+    }
+
+    const handleFilterGrade = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFilterGrade(event.target.value)
     }
 
     return (
         <Container maxWidth='xl'>
             <Stack direction={{ sm: 'column', lg: 'row' }} sx={{ overflowY: 'hidden', gap: 2 }}>
-                <Card sx={{ p: 1, width: { sm: '100%', lg: '30%' }, height: { sm: 'fit-content', lg: '100vh' }, overflowY: 'auto', overflowX: 'hidden' }}>
+                <Card
+                    sx={{
+                        p: 1, width: { sm: '100%', lg: '30%' },
+                        height: { sm: 'fit-content', lg: '100vh' },
+                        overflowY: 'auto', overflowX: 'hidden',
+                        scrollbarWidth: 'none', // Firefox
+                        '&::-webkit-scrollbar': { display: 'none' }, // Chrome, Safari, Edge
+
+                    }}
+                >
                     <Typography align="center" variant="h5" mb={2}>Set & Stats</Typography>
                     <Box
                         sx={{
@@ -152,126 +212,44 @@ export default function EquipmentBuilderPage() {
                             transform: 'rotate(-45deg)'
                         }}
                     >
-                        {/* slot helmet */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.helmet)}
-                            sx={{ gridColumn: 4, border: currentEquipments.helmet ? `1px solid ${GradeColor[currentEquipments.helmet.grade]}` : 'none', ...equipmentStyles(currentEquipments.helmet?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.helmet?.image ?? "/assets/equipments/placeholder/helmet.webp"}
-                                    alt={currentEquipments.helmet?.name ?? "helmet"}
-                                    width={48} height={48}
-                                />
+                        {Object.entries(currentSet).map((value, index) => (
+                            <Box key={index}
+                                onClick={() => chooseEquipment(CategorySet[index], value[0])}
+                                sx={{
+                                    border: value[1] ? `1px solid ${GradeColor[value[1].grade]}` : 'none',
+                                    ...equipmentStyles(value[1]?.grade),
+                                    ...gridColumnRows[index]!,
+                                    '&:hover .remove-btn': { opacity: 1 }
+                                }}
+                            >
+                                <Box sx={imageContainerStyles}>
+                                    {(value[1] && (
+                                        <Button color="warning" variant="contained" className="remove-btn"
+                                            onClick={() => removeEquipment(value[0])}
+                                            sx={{
+                                                position: 'absolute', top: '-50%', left: '50%',
+                                                transform: 'translate(-50%,50%)', opacity: 0,
+                                                '&:hover': { backgroundColor: 'primary' }
+                                            }}
+                                        >
+                                            <Iconify icon='eva:trash-2-outline' width={26} color='white' />
+                                        </Button>
+                                    ))}
+                                    <Image
+                                        src={value[1]?.image ?? `/assets/equipments/placeholder/${value[0]}.webp`}
+                                        alt={value[1]?.name ?? value[0]}
+                                        width={48} height={48}
+                                    />
+                                </Box>
                             </Box>
-                        </Box>
-                        {/* slot weapon */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.weapon)}
-                            sx={{ gridColumn: 2, gridRow: 2, ...equipmentStyles(currentEquipments.weapon?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.weapon?.image ?? "/assets/equipments/placeholder/weapon.webp"}
-                                    alt={currentEquipments.weapon?.name ?? "weapon"}
-                                    width={48} height={48}
-                                />
-                            </Box>
-                        </Box>
-                        {/* slot chest */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.chest)}
-                            sx={{ gridColumn: 3, gridRow: 2, ...equipmentStyles(currentEquipments.chest?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.chest?.image ?? "/assets/equipments/placeholder/chest.webp"}
-                                    alt={currentEquipments.chest?.name ?? "chest"}
-                                    width={48} height={48}
-                                />
-                            </Box>
-                        </Box>
-                        {/* slot gloves */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.gloves)}
-                            sx={{ gridColumn: 3, gridRow: 3, ...equipmentStyles(currentEquipments.gloves?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.gloves?.image ?? "/assets/equipments/placeholder/gloves.webp"}
-                                    alt={currentEquipments.gloves?.name ?? "gloves"}
-                                    width={48} height={48}
-                                />
-                            </Box>
-                        </Box>
-                        {/* slot legs */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.legs)}
-                            sx={{ gridColumn: 2, gridRow: 3, ...equipmentStyles(currentEquipments.legs?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.legs?.image ?? "/assets/equipments/placeholder/legs.webp"}
-                                    alt={currentEquipments.legs?.name ?? "legs"}
-                                    width={48} height={48}
-                                />
-                            </Box>
-                        </Box>
-                        {/* slot boot */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.boots)}
-                            sx={{ gridRow: 4, ...equipmentStyles(currentEquipments.boots?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.boots?.image ?? "/assets/equipments/placeholder/boots.webp"}
-                                    alt={currentEquipments.boots?.name ?? "boots"}
-                                    width={48} height={48}
-                                />
-                            </Box>
-                        </Box>
-                        {/* slot accessories 1 */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.accessories, "accessories1")}
-                            sx={{ gridRow: 3, ...equipmentStyles(currentEquipments.accessories1?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.accessories1?.image ?? "/assets/equipments/placeholder/accessory1.webp"}
-                                    alt={currentEquipments.accessories1?.name ?? "accessory1"}
-                                    width={48} height={48}
-                                />
-                            </Box>
-                        </Box>
-                        {/* slot accessories 2 */}
-                        <Box
-                            component="div"
-                            onClick={() => chooseEquipment(Category.accessories, "accessories2")}
-                            sx={{ gridRow: 4, gridColumn: 2, ...equipmentStyles(currentEquipments.accessories2?.grade) }}
-                        >
-                            <Box sx={imageContainerStyles}>
-                                <Image
-                                    src={currentEquipments.accessories2?.image ?? "/assets/equipments/placeholder/accessory2.webp"}
-                                    alt={currentEquipments.accessories2?.name ?? "accessory2"}
-                                    width={48} height={48}
-                                />
-                            </Box>
-                        </Box>
+                        ))}
                     </Box>
                     <Stack justifyContent='center' direction='row' gap={2}>
                         <Button variant="contained" color="error" onClick={resetEquipments}>
                             Reset
                         </Button>
                     </Stack>
-
-                    <Card sx={{ mt: 3, bgcolor: 'GrayText', p: 2 }}>
+                    <Card sx={{ mt: 3, bgcolor: 'rgb(128,128,128)', p: 2 }}>
                         <Typography gutterBottom variant="subtitle1" color='white'>Total Stats Value</Typography>
                         {overAllStats.length ? (
                             <List>
@@ -283,7 +261,7 @@ export default function EquipmentBuilderPage() {
                                         <ListItemText
                                             sx={{ flex: 1 }}
                                             primary={
-                                                <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'white' }}>
+                                                <Typography variant="body2" sx={{ fontSize: '12px', color: 'white' }}>
                                                     {stat.attributeType}
                                                 </Typography>
                                             }
@@ -292,7 +270,7 @@ export default function EquipmentBuilderPage() {
                                             <ListItemText
                                                 sx={{ flex: 'none' }}
                                                 primary={
-                                                    <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'white' }}>
+                                                    <Typography variant="body2" sx={{ fontSize: '12px', color: 'white' }}>
                                                         +{stat.attributeValue}%
                                                     </Typography>
                                                 }
@@ -303,10 +281,10 @@ export default function EquipmentBuilderPage() {
                             </List>
                         ) : (
                             <Box py={4}>
-                                <Typography align="center" sx={{ fontSize: '0.8rem', color: 'white' }} gutterBottom>
+                                <Typography sx={{ textAlign: 'center', fontSize: '12px', color: 'white' }} gutterBottom>
                                     No equipment equipped
                                 </Typography>
-                                <Typography align="center" sx={{ fontSize: '0.8rem', color: 'white' }}>
+                                <Typography sx={{ textAlign: 'center', fontSize: '12px', color: 'white' }}>
                                     Equip items to see your stats here
                                 </Typography>
                             </Box>
@@ -315,6 +293,15 @@ export default function EquipmentBuilderPage() {
                 </Card>
                 <Card sx={{ p: 1, width: { sm: '100%', lg: '70%' }, height: { sm: 'fit-content', lg: '100vh' }, overflowY: 'auto', overflowX: 'hidden' }}>
                     <Typography align="center" variant="h5" mb={2}>Equipment List</Typography>
+                    <FilterEquipments
+                        onFilterName={handleFilterName}
+                        onFilterCategory={handleFilterCategory}
+                        onFilterGrade={handleFilterGrade}
+                    />
+                    <EquipmentSetInfo
+                        currentSet={currentSet}
+                        onChooseEquipment={chooseEquipment}
+                    />
                     <Box
                         gap={1}
                         display='grid'
@@ -324,7 +311,7 @@ export default function EquipmentBuilderPage() {
                             lg: 'repeat(9, 1fr)',
                         }}
                     >
-                        {equipmentList.map((equipment, i) => (
+                        {dataFiltered.map((equipment, i) => (
                             <Tooltip
                                 key={i} title={equipment.name} arrow placement="top"
                                 slotProps={{
@@ -348,4 +335,35 @@ export default function EquipmentBuilderPage() {
             </Stack>
         </Container >
     )
+}
+
+
+function applyFilter({
+    inputData,
+    filterName,
+    filterCategory,
+    filterGrade,
+}: {
+    inputData: Equipment[]
+    filterName: string
+    filterCategory: string,
+    filterGrade: string,
+}) {
+    const stabilizedThis = inputData.map((el, index) => [el, index] as const)
+
+    inputData = stabilizedThis.map((el) => el[0])
+
+    if (filterName) {
+        inputData = inputData.filter((input) => input.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+    }
+
+    if (filterCategory && filterCategory !== "All") {
+        inputData = inputData.filter((input) => String(input.category).indexOf(filterCategory) !== -1)
+    }
+
+    if (filterGrade && filterGrade !== "All") {
+        inputData = inputData.filter((input) => String(input.grade).indexOf(filterGrade) !== -1)
+    }
+
+    return inputData
 }

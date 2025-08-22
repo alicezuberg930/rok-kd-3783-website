@@ -5932,10 +5932,6 @@ export const qnas = [
         "answer": "Themselves"
     },
     {
-        "question": "Where was the first Winter Olympics held in 1924?",
-        "answer": "France"
-    },
-    {
         "question": "Which ancient Greek scholar laid the foundations for future European mathematics and authored the 'Elements' of geometry?",
         "answer": "Euclid"
     },

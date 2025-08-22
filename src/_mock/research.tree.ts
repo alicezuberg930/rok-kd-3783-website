@@ -301,5 +301,23 @@ export const researchTree = [
                 }
             ]
         }
-    ]
+    ],
+    [
+        {
+            technology: "Metallurgy",
+            levels: 1,
+            researchAttributes: [
+                {
+                    time: 384,
+                    powerIncrease: 5,
+                    rssRequired: {
+                        food: 50000,
+                        wood: 50000,
+                        stone: 37500,
+                        gold: 0
+                    }
+                }
+            ]
+        }
+    ],
 ]
