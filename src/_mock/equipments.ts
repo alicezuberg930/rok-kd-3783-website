@@ -2680,6 +2680,8 @@ export const bootsEquipments = [
     ...e, image: `/assets/equipments/boots/${slugify(e.name, { remove: /['"]/g, strict: true })}.webp`
 }))
 
+let i = 0
+
 export const equipments = [
     ...helmetEquipments,
     ...chestEquipments,
@@ -2688,4 +2690,6 @@ export const equipments = [
     ...legsEquipment,
     ...accessoriesEquipments,
     ...bootsEquipments
-]
+].map(e => ({
+    ...e, id: i++
+}))

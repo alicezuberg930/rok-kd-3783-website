@@ -1,16 +1,15 @@
 "use client"
-import { Equipment } from "@/@types/equipment";
-import { Category, Grade, GradeColor, StatType } from "@/@types/equipment";
+import { Category, Grade, GradeColor, StatType, CategorySet, Equipment } from "@/@types/equipment";
 import { equipments } from "@/_mock/equipments";
 import { deepObjectComparison } from "@/utils/comparison";
-import { Box, Button, Card, Container, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, Container, List, ListItem, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import { useSnackbar } from "@/components/snackbar";
 import React, { useEffect, useState } from "react";
 import Iconify from "@/components/iconify";
 import EquipmentSetInfo from "@/sections/equipment-builder/EquipmentSetInfo";
 import FilterEquipments from "@/sections/equipment-builder/FilterEquipments";
-import { getComparator } from "@/components/table";
+import { decryptAES256, encryptAES256 } from "@/utils/encryption";
 
 const equipmentStyles = (grade?: Grade) => {
     return {
@@ -44,8 +43,6 @@ const gridColumnRows = [
     { gridRow: 4, gridColumn: 2 }
 ]
 
-const CategorySet = [Category.helmet, Category.weapon, Category.chest, Category.gloves, Category.legs, Category.boots, Category.accessories, Category.accessories,]
-
 type Props = {
     helmet: Equipment | null
     weapon: Equipment | null
@@ -77,6 +74,44 @@ export default function EquipmentBuilderPage() {
     const [filterName, setFilterName] = useState<string>("")
     const [filterCategory, setFilterCategory] = useState<string>("All")
     const [filterGrade, setFilterGrade] = useState<string>("All")
+
+    const createShareableLink = () => {
+        const baseUrl = window.location.origin + window.location.pathname
+
+        let equipmentIds: string = ""
+
+        Object.entries(currentSet).forEach(([key, equipment]) => {
+            if (equipment) {
+                equipmentIds += `${key}=${equipment.id},`
+            }
+        })
+
+        const encryptedLink = encryptAES256(equipmentIds.slice(0, -1))
+
+        // copy to clipboard
+        const shareableLink = `${baseUrl}/#${encryptedLink}`
+        navigator.clipboard.writeText(shareableLink).then(() => {
+            enqueueSnackbar("Shareable link copied to clipboard!", { variant: 'success' })
+        }).catch(err => {
+            console.error("Error copying shareable link:", err)
+        })
+
+    }
+
+    useEffect(() => {
+        const hashId = window.location.hash.slice(1)
+        if (!hashId) return
+        const newSet: Props = { ...baseSet }
+        const decrypted = decryptAES256(hashId)
+        if (!decrypted) return
+        const entries = decrypted.split(",").map(entry => entry.split("="))
+        console.log(entries)
+        entries.forEach(([key, value]) => {
+            const equipment = equipments.find(eq => eq.id == Number(value))
+            newSet[key as keyof Props] = equipment || null
+        })
+        setCurrentSet(newSet)
+    }, [])
 
     const dataFiltered: Equipment[] = applyFilter({
         inputData: equipments,
@@ -248,6 +283,9 @@ export default function EquipmentBuilderPage() {
                         <Button variant="contained" color="error" onClick={resetEquipments}>
                             Reset
                         </Button>
+                        <Button variant="contained" color="info" onClick={createShareableLink}>
+                            Share
+                        </Button>
                     </Stack>
                     <Card sx={{ mt: 3, bgcolor: 'rgb(128,128,128)', p: 2 }}>
                         <Typography gutterBottom variant="subtitle1" color='white'>Total Stats Value</Typography>
@@ -336,7 +374,6 @@ export default function EquipmentBuilderPage() {
         </Container >
     )
 }
-
 
 function applyFilter({
     inputData,

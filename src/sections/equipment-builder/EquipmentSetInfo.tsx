@@ -1,4 +1,4 @@
-import { Category, Equipment, Grade, GradeColor } from "@/@types/equipment";
+import { Category, CategorySet, Equipment, Grade, GradeColor } from "@/@types/equipment";
 import Iconify from "@/components/iconify";
 import { Box, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
 import Image from "next/image";
@@ -11,11 +11,9 @@ const equipmentStyles = (grade?: Grade) => {
         boxShadow: `inset -1px -1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}, inset 1px 1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}`,
         padding: 1,
         borderRadius: 2,
-        background: 'rgb(128,128,128)',
+        background: 'rgb(128,128,128,.5)',
     }
 }
-
-const CategorySet = [Category.helmet, Category.weapon, Category.chest, Category.gloves, Category.legs, Category.boots, Category.accessories, Category.accessories,]
 
 type Props = {
     currentSet: {

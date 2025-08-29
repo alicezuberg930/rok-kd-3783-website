@@ -58,6 +58,7 @@ export const GradeColor = {
 }
 
 export type Equipment = {
+    id: number
     name: string
     category: Category
     image: string
@@ -68,3 +69,5 @@ export type Equipment = {
     attribute?: string
 
 }
+
+export const CategorySet = [Category.helmet, Category.weapon, Category.chest, Category.gloves, Category.legs, Category.boots, Category.accessories, Category.accessories,]
