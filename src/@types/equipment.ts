@@ -67,7 +67,28 @@ export type Equipment = {
     attributes?: { statType: StatType, statValue: number }[]
     goldRequired: number
     attribute?: string
-
 }
 
 export const CategorySet = [Category.helmet, Category.weapon, Category.chest, Category.gloves, Category.legs, Category.boots, Category.accessories, Category.accessories,]
+
+export type EquipmentSet = {
+    helmet: Equipment | null
+    weapon: Equipment | null
+    chest: Equipment | null
+    gloves: Equipment | null
+    legs: Equipment | null
+    boots: Equipment | null
+    accessories1: Equipment | null
+    accessories2: Equipment | null
+}
+
+export const baseSet: EquipmentSet = {
+    helmet: null,
+    weapon: null,
+    chest: null,
+    gloves: null,
+    legs: null,
+    boots: null,
+    accessories1: null,
+    accessories2: null
+}

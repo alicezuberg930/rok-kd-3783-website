@@ -1,6 +1,5 @@
-import { Category, CategorySet, Equipment, Grade, GradeColor } from "@/@types/equipment";
-import Iconify from "@/components/iconify";
-import { Box, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
+import { Category, CategorySet, EquipmentSet, Grade, GradeColor } from "@/@types/equipment";
+import { Box, List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 
 const equipmentStyles = (grade?: Grade) => {
@@ -16,16 +15,7 @@ const equipmentStyles = (grade?: Grade) => {
 }
 
 type Props = {
-    currentSet: {
-        helmet: Equipment | null
-        weapon: Equipment | null
-        chest: Equipment | null
-        gloves: Equipment | null
-        legs: Equipment | null
-        boots: Equipment | null
-        accessories1: Equipment | null
-        accessories2: Equipment | null
-    },
+    currentSet: EquipmentSet,
     onChooseEquipment: (category: Category, accessoriesSlot?: string) => void
 }
 

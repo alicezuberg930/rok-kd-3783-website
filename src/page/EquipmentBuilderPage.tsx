@@ -1,72 +1,19 @@
 "use client"
-import { Category, Grade, GradeColor, StatType, CategorySet, Equipment } from "@/@types/equipment";
+import { Category, GradeColor, StatType, Equipment, baseSet, EquipmentSet } from "@/@types/equipment";
 import { equipments } from "@/_mock/equipments";
 import { deepObjectComparison } from "@/utils/comparison";
-import { Box, Button, Card, Container, List, ListItem, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Card, Container, List, ListItem, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import { useSnackbar } from "@/components/snackbar";
 import React, { useEffect, useState } from "react";
 import Iconify from "@/components/iconify";
 import EquipmentSetInfo from "@/sections/equipment-builder/EquipmentSetInfo";
 import FilterEquipments from "@/sections/equipment-builder/FilterEquipments";
-import { decryptAES256, encryptAES256 } from "@/utils/encryption";
-
-const equipmentStyles = (grade?: Grade) => {
-    return {
-        position: 'relative',
-        height: 0,
-        paddingBottom: '100%',
-        boxShadow: `inset -1px -1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}, inset 1px 1px 10px 0 ${grade ? GradeColor[grade] : '#9C9A9C'}`,
-        borderRadius: 1,
-        cursor: 'pointer',
-        background: grade ? 'transparent' : 'rgba(128,128,128,.6)',
-    }
-}
-
-const imageContainerStyles = {
-    display: 'flex',
-    aspectRatio: '1/1',
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transform: 'rotate(45deg)'
-}
-
-const gridColumnRows = [
-    { gridColumn: 4, gridRow: 0 },
-    { gridColumn: 2, gridRow: 2 },
-    { gridColumn: 3, gridRow: 2 },
-    { gridColumn: 3, gridRow: 3 },
-    { gridColumn: 2, gridRow: 3 },
-    { gridRow: 4, gridColumn: 0 },
-    { gridRow: 3, gridColumn: 0 },
-    { gridRow: 4, gridColumn: 2 }
-]
-
-type Props = {
-    helmet: Equipment | null
-    weapon: Equipment | null
-    chest: Equipment | null
-    gloves: Equipment | null
-    legs: Equipment | null
-    boots: Equipment | null
-    accessories1: Equipment | null
-    accessories2: Equipment | null
-}
-
-const baseSet: Props = {
-    helmet: null,
-    weapon: null,
-    chest: null,
-    gloves: null,
-    legs: null,
-    boots: null,
-    accessories1: null,
-    accessories2: null
-}
+import { decryptAES256 } from "@/utils/encryption";
+import EquipmentSetList from "@/sections/equipment-builder/EquipmentSetList";
 
 export default function EquipmentBuilderPage() {
-    const [currentSet, setCurrentSet] = useState<Props>(baseSet)
+    const [currentSet, setCurrentSet] = useState<EquipmentSet>(baseSet)
     const [currentAccessoriesSlot, setCurrentAccessoriesSlot] = useState<string | null>(null)
     const [overAllStats, setOverAllStats] = useState<{ attributeType: StatType | string, attributeValue?: number }[]>([])
     const { enqueueSnackbar } = useSnackbar()
@@ -74,51 +21,28 @@ export default function EquipmentBuilderPage() {
     const [filterName, setFilterName] = useState<string>("")
     const [filterCategory, setFilterCategory] = useState<string>("All")
     const [filterGrade, setFilterGrade] = useState<string>("All")
-
-    const createShareableLink = () => {
-        const baseUrl = window.location.origin + window.location.pathname
-
-        let equipmentIds: string = ""
-
-        Object.entries(currentSet).forEach(([key, equipment]) => {
-            if (equipment) {
-                equipmentIds += `${key}=${equipment.id},`
-            }
-        })
-
-        const encryptedLink = encryptAES256(equipmentIds.slice(0, -1))
-
-        // copy to clipboard
-        const shareableLink = `${baseUrl}/#${encryptedLink}`
-        navigator.clipboard.writeText(shareableLink).then(() => {
-            enqueueSnackbar("Shareable link copied to clipboard!", { variant: 'success' })
-        }).catch(err => {
-            console.error("Error copying shareable link:", err)
-        })
-
-    }
-
-    useEffect(() => {
-        const hashId = window.location.hash.slice(1)
-        if (!hashId) return
-        const newSet: Props = { ...baseSet }
-        const decrypted = decryptAES256(hashId)
-        if (!decrypted) return
-        const entries = decrypted.split(",").map(entry => entry.split("="))
-        console.log(entries)
-        entries.forEach(([key, value]) => {
-            const equipment = equipments.find(eq => eq.id == Number(value))
-            newSet[key as keyof Props] = equipment || null
-        })
-        setCurrentSet(newSet)
-    }, [])
-
+    // data
     const dataFiltered: Equipment[] = applyFilter({
         inputData: equipments,
         filterName,
         filterCategory,
         filterGrade
     })
+
+    useEffect(() => {
+        const hashId = window.location.hash.slice(1)
+        if (!hashId) return
+        const newSet: EquipmentSet = { ...baseSet }
+        const decrypted = decryptAES256(hashId)
+        if (!decrypted) return
+        const entries = decrypted.split(",").map(entry => entry.split("="))
+        console.log(entries)
+        entries.forEach(([key, value]) => {
+            const equipment = equipments.find(eq => eq.id == Number(value))
+            newSet[key as keyof EquipmentSet] = equipment || null
+        })
+        setCurrentSet(newSet)
+    }, [])
 
     useEffect(() => {
         calculateOverallStats()
@@ -237,56 +161,12 @@ export default function EquipmentBuilderPage() {
                     }}
                 >
                     <Typography align="center" variant="h5" mb={2}>Set & Stats</Typography>
-                    <Box
-                        sx={{
-                            my: 12,
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(4, 1fr)',
-                            gap: 1,
-                            gridAutoColumns: '1fr',
-                            transform: 'rotate(-45deg)'
-                        }}
-                    >
-                        {Object.entries(currentSet).map((value, index) => (
-                            <Box key={index}
-                                onClick={() => chooseEquipment(CategorySet[index], value[0])}
-                                sx={{
-                                    border: value[1] ? `1px solid ${GradeColor[value[1].grade]}` : 'none',
-                                    ...equipmentStyles(value[1]?.grade),
-                                    ...gridColumnRows[index]!,
-                                    '&:hover .remove-btn': { opacity: 1 }
-                                }}
-                            >
-                                <Box sx={imageContainerStyles}>
-                                    {(value[1] && (
-                                        <Button color="warning" variant="contained" className="remove-btn"
-                                            onClick={() => removeEquipment(value[0])}
-                                            sx={{
-                                                position: 'absolute', top: '-50%', left: '50%',
-                                                transform: 'translate(-50%,50%)', opacity: 0,
-                                                '&:hover': { backgroundColor: 'primary' }
-                                            }}
-                                        >
-                                            <Iconify icon='eva:trash-2-outline' width={26} color='white' />
-                                        </Button>
-                                    ))}
-                                    <Image
-                                        src={value[1]?.image ?? `/assets/equipments/placeholder/${value[0]}.webp`}
-                                        alt={value[1]?.name ?? value[0]}
-                                        width={48} height={48}
-                                    />
-                                </Box>
-                            </Box>
-                        ))}
-                    </Box>
-                    <Stack justifyContent='center' direction='row' gap={2}>
-                        <Button variant="contained" color="error" onClick={resetEquipments}>
-                            Reset
-                        </Button>
-                        <Button variant="contained" color="info" onClick={createShareableLink}>
-                            Share
-                        </Button>
-                    </Stack>
+                    <EquipmentSetList
+                        currentSet={currentSet}
+                        onChooseEquipment={chooseEquipment}
+                        onRemoveEquipment={removeEquipment}
+                        onResetEquipment={resetEquipments}
+                    />
                     <Card sx={{ mt: 3, bgcolor: 'rgb(128,128,128)', p: 2 }}>
                         <Typography gutterBottom variant="subtitle1" color='white'>Total Stats Value</Typography>
                         {overAllStats.length ? (
@@ -371,7 +251,7 @@ export default function EquipmentBuilderPage() {
                     </Box>
                 </Card>
             </Stack>
-        </Container >
+        </Container>
     )
 }
 
@@ -387,20 +267,15 @@ function applyFilter({
     filterGrade: string,
 }) {
     const stabilizedThis = inputData.map((el, index) => [el, index] as const)
-
     inputData = stabilizedThis.map((el) => el[0])
-
     if (filterName) {
         inputData = inputData.filter((input) => input.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
     }
-
     if (filterCategory && filterCategory !== "All") {
         inputData = inputData.filter((input) => String(input.category).indexOf(filterCategory) !== -1)
     }
-
     if (filterGrade && filterGrade !== "All") {
         inputData = inputData.filter((input) => String(input.grade).indexOf(filterGrade) !== -1)
     }
-
     return inputData
 }
