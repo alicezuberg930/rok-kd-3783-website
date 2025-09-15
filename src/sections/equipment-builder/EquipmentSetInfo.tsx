@@ -1,4 +1,4 @@
-import { Category, CategorySet, EquipmentSet, Grade, GradeColor } from "@/@types/equipment";
+import { Category, CategorySetOrder, EquipmentSet, Grade, GradeColor } from "@/@types/equipment";
 import { Box, List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 
@@ -33,7 +33,7 @@ export default function EquipmentSetInfo({ currentSet, onChooseEquipment }: Prop
         >
             {Object.entries(currentSet).map((equipment, index) => (
                 <Box key={index}
-                    onClick={() => onChooseEquipment(CategorySet[index], equipment[0])}
+                    onClick={() => onChooseEquipment(CategorySetOrder[index], equipment[0])}
                     sx={{ ...equipmentStyles(equipment[1]?.grade), cursor: 'pointer' }}
                 >
                     <Typography variant="button" color="white">{equipment[0]}</Typography>

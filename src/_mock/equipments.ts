@@ -1,12 +1,13 @@
 import slugify from "slugify";
-import { Category, Grade, StatType } from "@/@types/equipment";
+import { Category, Equipment, Grade, Material, StatType } from "@/@types/equipment";
 
 export const helmetEquipments = [
     {
+        id: 0,
         name: "Pride of the Khan",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 30000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -18,13 +19,18 @@ export const helmetEquipments = [
                 statType: StatType.archerHP,
                 statValue: 8
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 50 },
+            { name: Material.ebony, amount: 10 }
         ]
     },
     {
+        id: 1,
         name: "Helm of the Conqueror",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 30000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -36,13 +42,18 @@ export const helmetEquipments = [
                 statType: StatType.cavalryHP,
                 statValue: 8
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 10 },
+            { name: Material.ironOre, amount: 50 }
         ]
     },
     {
+        id: 2,
         name: "Ancestral Mask of Night",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 30000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -54,13 +65,18 @@ export const helmetEquipments = [
                 statType: StatType.infantryATK,
                 statValue: 8
             }
+        ],
+        materials: [
+            { name: Material.ebony, amount: 50 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 3,
         name: "Dragon's Breath Helm",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 20000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -76,13 +92,19 @@ export const helmetEquipments = [
                 statType: StatType.infantryDEF,
                 statValue: 4
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 10 },
+            { name: Material.ebony, amount: 40 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 4,
         name: "Gold Helm of the Eternal Empire",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 20000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -98,13 +120,19 @@ export const helmetEquipments = [
                 statType: StatType.cavalryHP,
                 statValue: 3
             },
+        ],
+        materials: [
+            { name: Material.leather, amount: 10 },
+            { name: Material.ebony, amount: 10 },
+            { name: Material.ironOre, amount: 40 }
         ]
     },
     {
+        id: 5,
         name: "Diadem of the Glorious Goddess",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 20000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -116,13 +144,19 @@ export const helmetEquipments = [
                 statType: StatType.cavalryMarchSpeed,
                 statValue: 2
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 20 },
+            { name: Material.ebony, amount: 20 },
+            { name: Material.ironOre, amount: 20 }
         ]
     },
     {
+        id: 6,
         name: "War Helm of the Hellish Wasteland",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 20000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -138,13 +172,19 @@ export const helmetEquipments = [
                 statType: StatType.archerDEF,
                 statValue: 3
             },
+        ],
+        materials: [
+            { name: Material.leather, amount: 40 },
+            { name: Material.ebony, amount: 10 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 7,
         name: "Fierce Wolf's Helmet",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 30000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -156,13 +196,19 @@ export const helmetEquipments = [
                 statType: StatType.siegeMarchSpeed,
                 statValue: 4
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 20 },
+            { name: Material.ebony, amount: 20 },
+            { name: Material.ironOre, amount: 20 }
         ]
     },
     {
+        id: 8,
         name: "Witch's Deadwood Crown",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 20000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -178,13 +224,17 @@ export const helmetEquipments = [
                 statType: StatType.siegeMarchSpeed,
                 statValue: 2
             }
+        ],
+        materials: [
+            { name: Material.animalBone, amount: 25 },
         ]
     },
     {
+        id: 9,
         name: "Abyssal Visage",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 5000000,
         grade: Grade.epic,
         gradeOrder: 4,
         attributes: [
@@ -200,13 +250,19 @@ export const helmetEquipments = [
                 statType: StatType.archerATK,
                 statValue: 3
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 30 },
+            { name: Material.ebony, amount: 10 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 10,
         name: "Witch's Lineage",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 5000000,
         grade: Grade.epic,
         gradeOrder: 4,
         attributes: [
@@ -222,13 +278,19 @@ export const helmetEquipments = [
                 statType: StatType.archerDEF,
                 statValue: 3
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 10 },
+            { name: Material.ebony, amount: 10 },
+            { name: Material.ironOre, amount: 30 }
         ]
     },
     {
+        id: 11,
         name: "Knight's Steel Diadem",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 5000000,
         grade: Grade.epic,
         gradeOrder: 4,
         attributes: [
@@ -240,13 +302,19 @@ export const helmetEquipments = [
                 statType: StatType.siegeMarchSpeed,
                 statValue: 2
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 20 },
+            { name: Material.ebony, amount: 20 },
+            { name: Material.ironOre, amount: 20 }
         ]
     },
     {
+        id: 12,
         name: "Mask of the Forest Guardian",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 6000000,
         grade: Grade.epic,
         gradeOrder: 4,
         attributes: [
@@ -262,13 +330,17 @@ export const helmetEquipments = [
                 statType: StatType.infantryATK,
                 statValue: 4
             }
+        ],
+        materials: [
+            { name: Material.animalBone, amount: 25 }
         ]
     },
     {
+        id: 13,
         name: "Revival Helm",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 6000000,
         grade: Grade.epic,
         gradeOrder: 4,
         attributes: [
@@ -280,13 +352,18 @@ export const helmetEquipments = [
                 statType: StatType.infantryDEF,
                 statValue: 5
             }
+        ],
+        materials: [
+            { name: Material.ebony, amount: 30 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 14,
         name: "Expedition War Helm",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 2000000,
         grade: Grade.elite,
         gradeOrder: 3,
         attributes: [
@@ -302,13 +379,18 @@ export const helmetEquipments = [
                 statType: StatType.expGain,
                 statValue: 3
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 40 },
+            { name: Material.ironOre, amount: 20 }
         ]
     },
     {
+        id: 15,
         name: "Harvester's Headscarf",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 3000000,
         grade: Grade.elite,
         gradeOrder: 3,
         attributes: [
@@ -324,13 +406,17 @@ export const helmetEquipments = [
                 statType: StatType.siegeDEF,
                 statValue: 3
             }
+        ],
+        materials: [
+            { name: Material.animalBone, amount: 30 }
         ]
     },
     {
+        id: 16,
         name: "Windswept War Helm",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 3000000,
         grade: Grade.elite,
         gradeOrder: 3,
         attributes: [
@@ -346,13 +432,18 @@ export const helmetEquipments = [
                 statType: StatType.allMarchSpeed,
                 statValue: 3
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 30 },
+            { name: Material.ironOre, amount: 30 }
         ]
     },
     {
+        id: 17,
         name: "Helm of Fear",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 500000,
         grade: Grade.advanced,
         gradeOrder: 2,
         attributes: [
@@ -368,13 +459,18 @@ export const helmetEquipments = [
                 statType: StatType.dmgToBarbarians,
                 statValue: 3
             },
+        ],
+        materials: [
+            { name: Material.leather, amount: 40 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 18,
         name: "Helm of Phoenix",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 500000,
         grade: Grade.advanced,
         gradeOrder: 2,
         attributes: [
@@ -390,13 +486,18 @@ export const helmetEquipments = [
                 statType: StatType.dmgToBarbarians,
                 statValue: 3
             }
+        ],
+        materials: [
+            { name: Material.ebony, amount: 40 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 19,
         name: "Iron Helm",
         category: Category.helmet,
         image: "",
-        goldRequired: 0,
+        goldRequired: 100000,
         grade: Grade.normal,
         gradeOrder: 1,
         attributes: [
@@ -404,6 +505,9 @@ export const helmetEquipments = [
                 statType: StatType.infantryATK,
                 statValue: 3
             }
+        ],
+        materials: [
+            { name: Material.ironOre, amount: 80 }
         ]
     }
 ].map(e => ({
@@ -412,10 +516,11 @@ export const helmetEquipments = [
 
 export const chestEquipments = [
     {
+        id: 20,
         name: "Shadow Legion's Retribution",
         category: Category.chest,
         image: "",
-        goldRequired: 0,
+        goldRequired: 15000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -431,13 +536,19 @@ export const chestEquipments = [
                 statType: StatType.archerATK,
                 statValue: 5
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 40 },
+            { name: Material.ebony, amount: 10 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 21,
         name: "The Milky Way",
         category: Category.chest,
         image: "",
-        goldRequired: 0,
+        goldRequired: 15000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -453,13 +564,19 @@ export const chestEquipments = [
                 statType: StatType.expGain,
                 statValue: 5
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 10 },
+            { name: Material.ebony, amount: 40 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
+        id: 22,
         name: "Hope Cloak",
         category: Category.chest,
         image: "",
-        goldRequired: 0,
+        goldRequired: 15000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -475,13 +592,19 @@ export const chestEquipments = [
                 statType: StatType.archerDEF,
                 statValue: 5
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 10 },
+            { name: Material.ebony, amount: 10 },
+            { name: Material.ironOre, amount: 40 }
         ]
     },
     {
+        id: 23,
         name: "Dragon's Breath Plate",
         category: Category.chest,
         image: "",
-        goldRequired: 0,
+        goldRequired: 20000000,
         grade: Grade.legendary,
         gradeOrder: 5,
         attributes: [
@@ -493,6 +616,11 @@ export const chestEquipments = [
                 statType: StatType.cavalryDEF,
                 statValue: 5
             }
+        ],
+        materials: [
+            { name: Material.leather, amount: 10 },
+            { name: Material.ebony, amount: 40 },
+            { name: Material.ironOre, amount: 10 }
         ]
     },
     {
@@ -2682,7 +2810,7 @@ export const bootsEquipments = [
 
 let i = 0
 
-export const equipments = [
+export const equipments: Equipment[] = [
     ...helmetEquipments,
     ...chestEquipments,
     ...weaponEquipments,

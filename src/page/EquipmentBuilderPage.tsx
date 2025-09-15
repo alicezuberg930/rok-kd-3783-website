@@ -5,7 +5,7 @@ import { deepObjectComparison } from "@/utils/comparison";
 import { Box, Card, Container, List, ListItem, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import { useSnackbar } from "@/components/snackbar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Iconify from "@/components/iconify";
 import EquipmentSetInfo from "@/sections/equipment-builder/EquipmentSetInfo";
 import FilterEquipments from "@/sections/equipment-builder/FilterEquipments";
@@ -15,7 +15,7 @@ import EquipmentSetList from "@/sections/equipment-builder/EquipmentSetList";
 export default function EquipmentBuilderPage() {
     const [currentSet, setCurrentSet] = useState<EquipmentSet>(baseSet)
     const [currentAccessoriesSlot, setCurrentAccessoriesSlot] = useState<string | null>(null)
-    const [overAllStats, setOverAllStats] = useState<{ attributeType: StatType | string, attributeValue?: number }[]>([])
+    // const [overAllStats, setOverAllStats] = useState<{ attributeType: StatType | string, attributeValue?: number }[]>([])
     const { enqueueSnackbar } = useSnackbar()
     // filter 
     const [filterName, setFilterName] = useState<string>("")
@@ -36,7 +36,6 @@ export default function EquipmentBuilderPage() {
         const decrypted = decryptAES256(hashId)
         if (!decrypted) return
         const entries = decrypted.split(",").map(entry => entry.split("="))
-        console.log(entries)
         entries.forEach(([key, value]) => {
             const equipment = equipments.find(eq => eq.id == Number(value))
             newSet[key as keyof EquipmentSet] = equipment || null
@@ -44,11 +43,7 @@ export default function EquipmentBuilderPage() {
         setCurrentSet(newSet)
     }, [])
 
-    useEffect(() => {
-        calculateOverallStats()
-    }, [currentSet])
-
-    const calculateOverallStats = () => {
+    const overAllStats: { attributeType: StatType | string, attributeValue?: number }[] = useMemo(() => {
         const allStats: { attributeType: StatType | string, attributeValue?: number }[] = []
         Object.entries(currentSet).map(eq => {
             if (eq[1] != null) {
@@ -68,9 +63,8 @@ export default function EquipmentBuilderPage() {
                 if (chosenSet.attribute) allStats.push({ attributeType: chosenSet.attribute })
             }
         })
-        allStats.sort((a, b) => String(a.attributeType).localeCompare(String(b.attributeType)))
-        setOverAllStats(allStats)
-    }
+        return allStats.sort((a, b) => String(a.attributeType).localeCompare(String(b.attributeType)))
+    }, [currentSet])
 
     const setEquipment = (equipment: Equipment) => {
         if (equipment.category === Category.accessories) {
@@ -125,7 +119,6 @@ export default function EquipmentBuilderPage() {
     const resetEquipments = () => {
         setCurrentSet(baseSet)
         setCurrentAccessoriesSlot(null)
-        setOverAllStats([])
         setFilterName("")
         setFilterCategory("All")
         setFilterGrade("All")

@@ -49,12 +49,11 @@ export enum StatType {
     unitCapacity = "Unit Capacity"
 }
 
-export const GradeColor = {
-    [Grade.legendary]: '#e56707',
-    [Grade.epic]: '#c55bd2',
-    [Grade.elite]: '#0398bc',
-    [Grade.advanced]: '#05b919',
-    [Grade.normal]: '#878a8c',
+export enum Material {
+    animalBone = "Animal Bone",
+    leather = "Leather",
+    ebony = "Ebony",
+    ironOre = "Iron Ore"
 }
 
 export type Equipment = {
@@ -67,9 +66,8 @@ export type Equipment = {
     attributes?: { statType: StatType, statValue: number }[]
     goldRequired: number
     attribute?: string
+    materials?: { name: Material, amount: number }[]
 }
-
-export const CategorySet = [Category.helmet, Category.weapon, Category.chest, Category.gloves, Category.legs, Category.boots, Category.accessories, Category.accessories,]
 
 export type EquipmentSet = {
     helmet: Equipment | null
@@ -81,6 +79,16 @@ export type EquipmentSet = {
     accessories1: Equipment | null
     accessories2: Equipment | null
 }
+
+export const GradeColor = {
+    [Grade.legendary]: '#e56707',
+    [Grade.epic]: '#c55bd2',
+    [Grade.elite]: '#0398bc',
+    [Grade.advanced]: '#05b919',
+    [Grade.normal]: '#878a8c',
+}
+
+export const CategorySetOrder = [Category.helmet, Category.weapon, Category.chest, Category.gloves, Category.legs, Category.boots, Category.accessories, Category.accessories,]
 
 export const baseSet: EquipmentSet = {
     helmet: null,

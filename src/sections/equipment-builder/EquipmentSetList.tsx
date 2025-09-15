@@ -1,4 +1,4 @@
-import { Category, CategorySet, Equipment, EquipmentSet, Grade, GradeColor } from "@/@types/equipment";
+import { Category, CategorySetOrder, Equipment, EquipmentSet, Grade, GradeColor } from "@/@types/equipment";
 import Iconify from "@/components/iconify";
 import { encryptAES256 } from "@/utils/encryption";
 import { Box, Button, Stack } from "@mui/material";
@@ -78,7 +78,7 @@ export default function EquipmentSetList({ currentSet, onChooseEquipment, onRemo
             >
                 {Object.entries(currentSet).map((value, index) => (
                     <Box key={index}
-                        onClick={() => onChooseEquipment(CategorySet[index], value[0])}
+                        onClick={() => onChooseEquipment(CategorySetOrder[index], value[0])}
                         sx={{
                             border: value[1] ? `1px solid ${GradeColor[value[1].grade]}` : 'none',
                             ...equipmentStyles(value[1]?.grade),
